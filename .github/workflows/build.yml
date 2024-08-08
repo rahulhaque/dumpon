@@ -1,0 +1,44 @@
+name: Build Binaries
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux, windows]
+        goarch: [amd64]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.22.6
+
+    - name: Get Version
+      id: get_version
+      run: |
+        # Extract version from the latest Git tag or default to '0.0.0'
+        VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+        echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+    - name: Build binary
+      run: |
+        mkdir -p dist
+        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags "-X main.version=${{ env.VERSION }}" -o dist/dumpon-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }} dumpon.go
+
+    - name: Upload binaries
+      uses: actions/upload-artifact@v2
+      with:
+        name: dumpon-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}
+        path: dist/dumpon-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}
