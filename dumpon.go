@@ -14,30 +14,35 @@ import (
 	"time"
 )
 
+// Declare version as a global variable
+var version = "1.0.0"
+
 // Declare maxMemory as a global variable
 var maxMemory int64
 
 func requestHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("-------------Start-------------")
-	fmt.Println("Request URL:", r.Host+r.URL.String())
-	fmt.Println("Request Method:", r.Method)
+	requestTime := time.Now().Format(time.DateTime)
+
+	fmt.Println(requestTime, "-------------Start-------------")
+	fmt.Println(requestTime, "Request URL:", r.Host+r.URL.String())
+	fmt.Println(requestTime, "Request Method:", r.Method)
 	fmt.Println()
 
 	// Print headers
-	fmt.Println("Request Headers:")
+	fmt.Println(requestTime, "Request Headers:")
 	for name, values := range r.Header {
 		for _, value := range values {
-			fmt.Printf("%s: %s\n", name, value)
+			fmt.Println(requestTime, name+": "+value)
 		}
 	}
 	fmt.Println()
 
 	// Print URL parameters
-	fmt.Println("URL Parameters:")
+	fmt.Println(requestTime, "URL Parameters:")
 	queryParams := r.URL.Query()
 	for param, values := range queryParams {
 		for _, value := range values {
-			fmt.Printf("%s: %s\n", param, value)
+			fmt.Println(requestTime, param+": "+value)
 		}
 	}
 	fmt.Println()
@@ -47,43 +52,43 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		// Parse the form with the specified memory limit
 		err := r.ParseMultipartForm(maxMemory)
 		if err != nil {
-			log.Println("Error parsing multipart form:", err)
+			log.Println(requestTime, "Error parsing multipart form:", err)
 			http.Error(w, "Unable to parse multipart form", http.StatusBadRequest)
 			return
 		}
 
 		// Print other form fields, skipping file fields
-		fmt.Println("Form Fields:")
+		fmt.Println(requestTime, "Form Fields:")
 		for key, values := range r.MultipartForm.Value {
 			if _, found := r.MultipartForm.File[key]; found {
 				// Skip fields that are files
 				continue
 			}
 			for _, value := range values {
-				fmt.Printf("%s: %s\n", key, value)
+				fmt.Println(requestTime, key+": "+value)
 			}
 		}
 		fmt.Println()
 
 		// Check for files
-		fmt.Println("Files:")
+		fmt.Println(requestTime, "Files:")
 		for key, files := range r.MultipartForm.File {
 			for _, file := range files {
-				fmt.Printf("%s: %s\n", key, file.Filename)
+				fmt.Println(requestTime, key+": "+file.Filename)
 			}
 		}
 	} else {
 		// For non-multipart data, just read the body
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			log.Println("Error reading request body:", err)
+			log.Println(requestTime, "Error reading request body:", err)
 		} else {
-			fmt.Println("Request Body:")
+			fmt.Println(requestTime, "Request Body:")
 			fmt.Println(string(body))
 		}
 	}
 
-	fmt.Println("--------------End--------------")
+	fmt.Println(requestTime, "--------------End--------------")
 }
 
 func main() {
@@ -93,6 +98,7 @@ func main() {
 
 	// Help message
 	flag.Usage = func() {
+		fmt.Println("Version:", version)
 		fmt.Println("Options:")
 		flag.PrintDefaults()
 	}
@@ -108,7 +114,7 @@ func main() {
 
 	// Start server in a goroutine
 	go func() {
-		fmt.Println("Server started on port", *port)
+		fmt.Println("Dumpon v"+version+" started on port", *port)
 		if err := server.ListenAndServe(); err != http.ErrServerClosed {
 			log.Fatalf("Could not listen on port %s: %v\n", address, err)
 		}
