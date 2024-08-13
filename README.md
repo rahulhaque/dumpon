@@ -4,20 +4,16 @@
 
 ## Notes
 
-- This is a work in progress but does what it is supposed to do.
-- I made this to have a portable dump server with me, usable anywhere any time, for any kind of requests.
+- I made this to have a portable dump server with me, usable anywhere at anytime, for debugging requests.
 - This is my first project in Go lang so suggestion and pull requests are welcome from experts.
 
-## Requirements
+## Installation
 
-- Ensure that Go^1.22.6 is installed and properly configured on your system to build and run the server.
+You can download the binary from [release](../../releases) page or build on your own from source. Ensure that Go^1.22.6 is installed and properly configured on your system to build from source.
 
 ## Usage
 
 ```bash
-# Build the executable
-go build -o dumpon main.go
-
 # See available options
 ./dumpon -h
 
