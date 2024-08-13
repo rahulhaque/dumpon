@@ -15,7 +15,7 @@ import (
 )
 
 // Declare version as a global variable
-var version = "1.0.0"
+var version = "development"
 
 // Declare maxMemory as a global variable
 var maxMemory int64
