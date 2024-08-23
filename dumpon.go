@@ -12,6 +12,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 // Declare version as a global variable
@@ -21,29 +23,29 @@ var version = "development"
 var maxMemory int64
 
 func requestHandler(w http.ResponseWriter, r *http.Request) {
-	requestTime := time.Now().Format(time.DateTime)
+	requestTime := color.CyanString(time.Now().Format(time.DateTime))
 
-	fmt.Println(requestTime, "-------------Start-------------")
-	fmt.Println(requestTime, "Request From:", r.RemoteAddr)
-	fmt.Println(requestTime, "Request URL:", r.Host+r.URL.String())
-	fmt.Println(requestTime, "Request Method:", r.Method)
+	fmt.Println(requestTime, color.MagentaString("-------------Start-------------"))
+	fmt.Println(requestTime, color.YellowString("Request From:"), r.RemoteAddr)
+	fmt.Println(requestTime, color.YellowString("Request URL:"), r.Host+r.URL.String())
+	fmt.Println(requestTime, color.YellowString("Request Method:"), r.Method)
 	fmt.Println()
 
 	// Print headers
-	fmt.Println(requestTime, "Request Headers:")
+	fmt.Println(requestTime, color.YellowString("Request Headers:"))
 	for name, values := range r.Header {
 		for _, value := range values {
-			fmt.Println(requestTime, name+": "+value)
+			fmt.Println(requestTime, color.GreenString(name)+": "+value)
 		}
 	}
 	fmt.Println()
 
 	// Print URL parameters
-	fmt.Println(requestTime, "URL Parameters:")
+	fmt.Println(requestTime, color.YellowString("URL Parameters:"))
 	queryParams := r.URL.Query()
-	for param, values := range queryParams {
+	for key, values := range queryParams {
 		for _, value := range values {
-			fmt.Println(requestTime, param+": "+value)
+			fmt.Println(requestTime, color.GreenString(key)+": "+value)
 		}
 	}
 	fmt.Println()
@@ -59,23 +61,23 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Print other form fields, skipping file fields
-		fmt.Println(requestTime, "Form Fields:")
+		fmt.Println(requestTime, color.YellowString("Form Fields:"))
 		for key, values := range r.MultipartForm.Value {
 			if _, found := r.MultipartForm.File[key]; found {
 				// Skip fields that are files
 				continue
 			}
 			for _, value := range values {
-				fmt.Println(requestTime, key+": "+value)
+				fmt.Println(requestTime, color.GreenString(key)+": "+value)
 			}
 		}
 		fmt.Println()
 
 		// Check for files
-		fmt.Println(requestTime, "Files:")
+		fmt.Println(requestTime, color.YellowString("Files:"))
 		for key, files := range r.MultipartForm.File {
 			for _, file := range files {
-				fmt.Println(requestTime, key+": "+file.Filename)
+				fmt.Println(requestTime, color.GreenString(key)+": "+file.Filename)
 			}
 		}
 	} else {
@@ -84,12 +86,12 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(requestTime, "Error reading request body:", err)
 		} else {
-			fmt.Println(requestTime, "Request Body:")
+			fmt.Println(requestTime, color.YellowString("Request Body:"))
 			fmt.Println(string(body))
 		}
 	}
 
-	fmt.Println(requestTime, "--------------End--------------")
+	fmt.Println(requestTime, color.MagentaString("--------------End--------------"))
 }
 
 func main() {
@@ -99,8 +101,8 @@ func main() {
 
 	// Help message
 	flag.Usage = func() {
-		fmt.Println("Version:", version)
-		fmt.Println("Options:")
+		fmt.Println(color.GreenString("Version:"), version)
+		fmt.Println(color.GreenString("Options:"))
 		flag.PrintDefaults()
 	}
 
@@ -115,10 +117,12 @@ func main() {
 
 	// Start server in a goroutine
 	go func() {
+		fmt.Println(color.GreenString("Dumpon server v."+version+" started on port"), *port)
+		fmt.Println(color.GreenString("Listening for requests..."))
+		fmt.Println()
 		if err := server.ListenAndServe(); err != http.ErrServerClosed {
 			log.Fatalf("Could not listen on port %s: %v\n", address, err)
 		}
-		fmt.Println("Dumpon v"+version+" started on port", *port)
 	}()
 
 	// Set up signal handler to catch interrupts
@@ -127,7 +131,7 @@ func main() {
 
 	// Wait for an interrupt signal
 	<-stop
-	fmt.Println("\nShutting down the server...")
+	fmt.Println(color.GreenString("\nShutting down the server..."))
 
 	// Create a timeout for force server shutdown
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
