@@ -24,6 +24,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 	requestTime := time.Now().Format(time.DateTime)
 
 	fmt.Println(requestTime, "-------------Start-------------")
+	fmt.Println(requestTime, "Request From:", r.RemoteAddr)
 	fmt.Println(requestTime, "Request URL:", r.Host+r.URL.String())
 	fmt.Println(requestTime, "Request Method:", r.Method)
 	fmt.Println()
@@ -114,10 +115,10 @@ func main() {
 
 	// Start server in a goroutine
 	go func() {
-		fmt.Println("Dumpon v"+version+" started on port", *port)
 		if err := server.ListenAndServe(); err != http.ErrServerClosed {
 			log.Fatalf("Could not listen on port %s: %v\n", address, err)
 		}
+		fmt.Println("Dumpon v"+version+" started on port", *port)
 	}()
 
 	// Set up signal handler to catch interrupts
