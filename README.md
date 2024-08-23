@@ -1,6 +1,6 @@
 # Dumpon 🗑️ Go HTTP Request Dump Server
 
-**Dumpon** is a simple HTTP server designed to dump information about incoming HTTP requests written in Go. It prints details such as request URL, method, headers, parameters, body and file uploads to the console.
+**Dumpon** is a simple HTTP request dump server written in Go. It listens for  prints details such as request URL, method, headers, parameters, body and file uploads to the console.
 
 ## Notes
 
@@ -23,7 +23,7 @@ You can download the binary from [release](../../releases) page or build on your
 ./dumpon
 ```
 
-## Sending Request
+## Test Sending Request
 
 ```bash
 # Simple GET request
@@ -36,39 +36,11 @@ curl -X POST http://localhost:80 -d "name=dumpon"
 curl -X POST http://localhost:80 -F "avatar=@path/to/avatar.png"
 ```
 
-## Print Format
+## Request Print Format
 
-Each request is separated by start and end boundary.
+See the attached screenshot.
 
-```bash
--------------Start-------------
-Request URL: localhost:8001/hello-world?name=rahul&email=rahul@email.com
-Request Method: POST
-
-Request Headers:
-Content-Type: multipart/form-data; boundary=--------------------------622393842521055747236185
-Authorization: Bearer 12345678
-X-Format: custom
-Connection: keep-alive
-Accept: application/json, text/plain, */*
-User-Agent: axios/1.7.2
-Content-Length: 20460
-Accept-Encoding: gzip, compress, deflate, br
-Request-Start-Time: 1723181706839
-
-URL Parameters:
-email: rahul@email.com
-name: rahul
-
-Form Fields:
-name: rahul
-email: rahul@email.com
-password: password
-
-Files:
-avatar: profile.jpg
---------------End--------------
-```
+<img title="login" src="screenshots/console.png" width="100%"/>
 
 ## Changelog
 
