@@ -23,13 +23,12 @@ var version = "development"
 var maxMemory int64
 
 func requestHandler(w http.ResponseWriter, r *http.Request) {
-	requestTime := color.CyanString(time.Now().Format(time.DateTime))
+	requestTime := color.CyanString("[" + time.Now().Format(time.DateTime) + "]")
 
-	fmt.Println(requestTime, color.MagentaString("-------------Start-------------"))
+	fmt.Println(requestTime, color.GreenString("-------------Start-------------"))
 	fmt.Println(requestTime, color.YellowString("Request From:"), r.RemoteAddr)
 	fmt.Println(requestTime, color.YellowString("Request URL:"), r.Host+r.URL.String())
 	fmt.Println(requestTime, color.YellowString("Request Method:"), r.Method)
-	fmt.Println()
 
 	// Print headers
 	fmt.Println(requestTime, color.YellowString("Request Headers:"))
@@ -38,7 +37,6 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(requestTime, color.GreenString(name)+": "+value)
 		}
 	}
-	fmt.Println()
 
 	// Print URL parameters
 	fmt.Println(requestTime, color.YellowString("URL Parameters:"))
@@ -48,7 +46,6 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(requestTime, color.GreenString(key)+": "+value)
 		}
 	}
-	fmt.Println()
 
 	// Check if multipart form data
 	if strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data") {
@@ -71,7 +68,6 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(requestTime, color.GreenString(key)+": "+value)
 			}
 		}
-		fmt.Println()
 
 		// Check for files
 		fmt.Println(requestTime, color.YellowString("Files:"))

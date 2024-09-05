@@ -1,6 +1,6 @@
 # Dumpon 🗑️ Go HTTP Request Dump Server
 
-**Dumpon** is a simple HTTP request dump server written in Go. It listens for  prints details such as request URL, method, headers, parameters, body and file uploads to the console.
+**Dumpon** is a simple HTTP request dump server written in Go. It listens for requests and prints them in details such as request URL, method, headers, parameters, body and file uploads to the console in a nicer format.
 
 ## Notes
 
